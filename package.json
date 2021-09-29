@@ -23,7 +23,6 @@
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "eslint": "^7.32.0",
-    "module-alias": "^2.2.2",
     "nodemon": "^2.0.12",
     "prisma": "3.1.1",
     "typescript": "^4.4.3"
@@ -38,7 +37,8 @@
     "google-auth-library": "^7.9.2",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "module-alias": "^2.2.2"
   },
   "_moduleAliases": {
     "@routes": "dist/routes",
