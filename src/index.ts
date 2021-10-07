@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import RecaptchaMiddleware from './middlewares/recaptcha';
+import JWTMiddleware from './middlewares/jwt';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -24,6 +25,7 @@ app.use(limiter);
 
 // Global middlewares
 app.use(RecaptchaMiddleware);
+app.use(JWTMiddleware);
 
 // API routes
 Routes(app);

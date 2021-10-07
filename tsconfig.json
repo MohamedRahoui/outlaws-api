@@ -25,9 +25,11 @@
       "@src/*": ["./src/*"],
       "@routes/*": ["./src/routes/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@tools/*": ["./src/tools/*"]
     }
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts"],
+  "files": ["custom.d.ts"]
 }
