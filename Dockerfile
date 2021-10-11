@@ -7,7 +7,7 @@ COPY .env.dev ./.env
 RUN yarn install --frozen-lockfile
 COPY src ./src
 RUN yarn prisma generate
-RUN yarn prisma db push
+RUN yarn prisma migrate dev
 RUN yarn build
 
 FROM node:14-alpine

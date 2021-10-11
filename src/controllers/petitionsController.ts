@@ -39,34 +39,42 @@ const Create = async (
   if (req.user) {
     createInput['userId'] = req.user.id;
   }
-  const createdPetition = await prisma.petition.create({
-    data: createInput as unknown as Petition,
-  });
-  if (!createdPetition) return res.status(400).send('Unable to sign');
-  const identity_card = myFiles.filter((file) =>
-    file.fieldname.includes('identity_card')
-  );
-  if (identity_card.length !== 2)
-    return res.status(403).send('Malicious attempt');
-  const signature = myFiles.find((file) => file.fieldname === 'signature');
-  if (!signature)
-    return res.status(422).send({
-      signature: 'Votre Signature manuscrite est requise',
+  try {
+    const createdPetition = await prisma.petition.create({
+      data: createInput as unknown as Petition,
     });
-  for (const file of identity_card) {
-    file.buffer = await sharp(file.buffer).webp({ quality: 20 }).toBuffer();
-  }
-  signature.buffer = await sharp(signature.buffer)
-    .webp({ quality: 20 })
-    .toBuffer();
+    if (!createdPetition) return res.status(400).send('Unable to sign');
+    const identity_card = myFiles.filter((file) =>
+      file.fieldname.includes('identity_card')
+    );
+    if (identity_card.length !== 2)
+      return res.status(403).send('Malicious attempt');
+    const signature = myFiles.find((file) => file.fieldname === 'signature');
+    if (!signature)
+      return res.status(422).send({
+        signature: 'Votre Signature manuscrite est requise',
+      });
+    for (const file of identity_card) {
+      file.buffer = await sharp(file.buffer).webp({ quality: 20 }).toBuffer();
+    }
+    signature.buffer = await sharp(signature.buffer)
+      .webp({ quality: 20 })
+      .toBuffer();
 
-  const uploadUrl = `petitions/${createdPetition.id}/`;
-  for (const file of identity_card) {
-    await UploadFile(file.buffer, uploadUrl + file.fieldname + '.webp');
-  }
-  await UploadFile(signature.buffer, uploadUrl + signature.fieldname + '.webp');
+    const uploadUrl = `petitions/${createdPetition.id}/`;
+    for (const file of identity_card) {
+      await UploadFile(file.buffer, uploadUrl + file.fieldname + '.webp');
+    }
+    await UploadFile(
+      signature.buffer,
+      uploadUrl + signature.fieldname + '.webp'
+    );
 
-  res.status(200).send('Successfull signature');
+    return res.status(200).send('Successfull signature');
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send('something went wrong');
+  }
 };
 
 /**

@@ -26,7 +26,7 @@ const Upload = (
       return res.status(422).send([
         {
           field: err.field || '',
-          message: 'Veillez choisir un autre fichier',
+          message: 'Veuillez choisir un autre fichier',
         },
       ]);
     }
