@@ -24,7 +24,10 @@ export const UploadFile = async (
     });
 };
 
-export const getS3Object = (key: string): Promise<string> => {
+export const getS3Object = (
+  key: string,
+  isBuffer = false
+): Promise<string | Buffer> => {
   return new Promise((resolve, reject) => {
     s3.getObject(
       {
@@ -40,8 +43,11 @@ export const getS3Object = (key: string): Promise<string> => {
           const buffer = Buffer.from(
             data.Body as WithImplicitCoercion<ArrayBuffer>
           );
-          // console.log(buffer);
-          resolve(buffer.toString('base64'));
+          if (!isBuffer) {
+            resolve(buffer.toString('base64'));
+          } else {
+            resolve(buffer);
+          }
         } else {
           reject('NONE');
         }

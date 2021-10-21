@@ -17,6 +17,11 @@ interface IToken {
   user: ITokenUser;
 }
 
+interface IUserPoints {
+  validatedPetitions: number;
+  petitionsInProgress: number;
+  currentPoints?: number;
+}
 // FORMS
 
 // Petition
@@ -30,4 +35,4 @@ type IPetitionSchema = {
   electoral_number: string;
   email: string;
 };
-export { IRoute, IToken, ITokenUser, IPetitionSchema };
+export { IRoute, IToken, ITokenUser, IPetitionSchema, IUserPoints };

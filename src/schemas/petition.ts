@@ -69,6 +69,16 @@ const formValidation = Yup.object({
       filesTypeCheck(files, ['image/png', 'image/jpeg'])
     ),
   signature: Yup.mixed().required('Votre Signature manuscrite est requise'),
+  user_id: Yup.string()
+    .uuid()
+    .test('ValidUser', 'Valid User', async (userId) => {
+      const found = await prisma.user.findFirst({
+        where: {
+          id: userId,
+        },
+      });
+      return !!found;
+    }),
 });
 
 /* 

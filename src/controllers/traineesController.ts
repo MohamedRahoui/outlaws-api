@@ -88,11 +88,10 @@ const GetCV = async (req: Request, res: Response): Promise<void | Response> => {
   });
   if (!trainee) return res.status(422).send('Invalid Trainee');
   const uri = `trainees/${uuid}/`;
-  const Querys = [getS3Object(`${uri}cv.pdf`)];
-  const files = await Promise.all(Querys).catch(() => {
+  const cv = await getS3Object(`${uri}cv.pdf`, true).catch(() => {
     return res.status(400).send('Failed to get files');
   });
-  return res.status(200).send(files || []);
+  return res.status(200).send(cv);
 };
 
 export { Create, GetAll, GetCV };

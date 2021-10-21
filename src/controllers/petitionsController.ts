@@ -36,7 +36,9 @@ const Create = async (
     cin: body.cin,
     electoral_number: body.electoral_number,
   };
-  if (req.user) {
+  if (req.body.user_id) {
+    createInput['userId'] = req.body.user_id;
+  } else if (req.user) {
     createInput['userId'] = req.user.id;
   }
   try {

@@ -6,6 +6,6 @@ const router = Router();
 
 router.post('/', Upload, Create);
 router.get('/', GetAll);
-router.get('/files/:uuid', GetCV);
+router.get('/cv/:uuid', GetCV);
 
 export default router;

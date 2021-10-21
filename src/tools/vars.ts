@@ -6,6 +6,18 @@ const PUBLIC_ROUTES: IRoute[] = [
     method: 'POST',
   },
   {
+    path: '/volunteers',
+    method: 'POST',
+  },
+  {
+    path: '/trainees',
+    method: 'POST',
+  },
+  {
+    path: '/messages',
+    method: 'POST',
+  },
+  {
     path: '/auth/google',
     method: 'POST',
     skip: true,
@@ -21,6 +33,14 @@ const NO_RECAPTCHA: IRoute[] = [
   {
     path: '/auth/refresh-token',
     method: 'POST',
+  },
+  {
+    path: '/data/rewards',
+    method: 'GET',
+  },
+  {
+    path: '/data/points',
+    method: 'GET',
   },
 ];
 
