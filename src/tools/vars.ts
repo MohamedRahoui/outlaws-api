@@ -10,6 +10,10 @@ const PUBLIC_ROUTES: IRoute[] = [
     method: 'POST',
   },
   {
+    path: '/votes',
+    method: 'POST',
+  },
+  {
     path: '/testimonies/public',
     method: 'GET',
   },
