@@ -82,13 +82,7 @@ const formValidation = Yup.object({
 });
 
 /* 
-FIXME: Stop copying the same code instead of reusing it
-Story time for my grand kids: Whenever I decided to make this
-a reusable function, I ended up getting distracted by something else.
-So I came to the conclusion that this fucntion, Is god and wants to be 
-copy pasted all over my project to protect it. And I respected that.
-Facts for adults: I just don't wanna fucking do it, and made this shit up
-so I don't look stupid when someone's read this :)
+FIXME: Clean this up, and stop being lazy
 */
 const petitionErrors = (
   data: IPetitionSchema

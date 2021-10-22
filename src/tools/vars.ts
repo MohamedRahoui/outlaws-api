@@ -10,6 +10,14 @@ const PUBLIC_ROUTES: IRoute[] = [
     method: 'POST',
   },
   {
+    path: '/testimonies/public',
+    method: 'GET',
+  },
+  {
+    path: '/testimonies',
+    method: 'POST',
+  },
+  {
     path: '/trainees',
     method: 'POST',
   },
@@ -29,6 +37,7 @@ const PUBLIC_ROUTES: IRoute[] = [
   },
 ];
 
+// 
 const NO_RECAPTCHA: IRoute[] = [
   {
     path: '/auth/refresh-token',

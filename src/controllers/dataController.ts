@@ -1,7 +1,7 @@
 import { PrismaClient } from '.prisma/client';
 import { IUserPoints } from '@src/tools/models';
 import { Response, Request } from 'express';
-const prisma = new PrismaClient({ log: ['query'] });
+const prisma = new PrismaClient();
 const GetRewards = async (_: Request, res: Response): Promise<void> => {
   const rewards = await prisma.reward.findMany({
     where: {
