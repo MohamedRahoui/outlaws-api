@@ -208,6 +208,8 @@ const Download = async (
   const rows: TableRow[] = [];
   for (const petition of petitions) {
     const uri = `petitions/${petition.id}/`;
+    const signature = await getS3Object(`${uri}signature.webp`, true);
+    const toPng = await sharp(signature).png().toBuffer();
     rows.push(
       new TableRow({
         children: [
@@ -216,7 +218,7 @@ const Download = async (
               new Paragraph({
                 children: [
                   new ImageRun({
-                    data: await getS3Object(`${uri}signature.webp`, true),
+                    data: toPng,
                     transformation: {
                       width: 122,
                       height: 45,
