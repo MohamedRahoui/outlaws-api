@@ -1,4 +1,4 @@
-import { PrismaClient, Testimony } from '.prisma/client';
+import { Prisma, PrismaClient, Testimony } from '.prisma/client';
 import testimonyErrors from '@src/schemas/testimony';
 import { IsStaff } from '@src/tools/checks';
 import { Response, Request } from 'express';
@@ -38,22 +38,45 @@ const Create = async (
  * @param res
  * @returns
  */
-const GetAll = async (_: Request, res: Response): Promise<void | Response> => {
-  const testimonies = await prisma.testimony.findMany({
+const GetAll = async (
+  req: Request,
+  res: Response
+): Promise<void | Response> => {
+  const cursor: Testimony['id'] | undefined = req.query.cursor
+    ? parseInt((req.query.cursor as string) || '')
+    : undefined;
+  const args: Prisma.TestimonyFindManyArgs = {
+    take: 10,
     where: {
       valid: true,
     },
     orderBy: {
-      createdAt: 'desc',
+      id: 'desc',
     },
     select: {
       age: true,
       name: true,
       city: true,
       text: true,
+      id: true,
     },
-  });
-  return res.status(200).send(testimonies || []);
+  };
+  if (cursor) {
+    args.cursor = {
+      id: cursor,
+    };
+    args.skip = 1;
+    const testimonies = await prisma.testimony.findMany(args);
+    return res.status(200).send(testimonies || []);
+  } else {
+    const testimonies = await prisma.testimony.findMany(args);
+    const count = await prisma.testimony.count({
+      where: {
+        valid: true,
+      },
+    });
+    return res.status(200).send({ testimonies: testimonies || [], count });
+  }
 };
 
 /**

@@ -4,6 +4,19 @@ import { IsStaff } from '@src/tools/checks';
 import { getS3Object, UploadFile } from '@src/tools/storage';
 import { Response, Request } from 'express';
 import sharp from 'sharp';
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  VerticalAlign,
+  WidthType,
+  AlignmentType,
+  TextRun,
+  ImageRun,
+} from 'docx';
 
 const prisma = new PrismaClient();
 
@@ -155,4 +168,162 @@ const Validate = async (
   return res.status(200).send('Validation changed');
 };
 
-export { Create, GetAll, GetFiles, Validate };
+/**
+ * Download all vildate petitions as docx
+ * @param req
+ * @param res
+ * @returns
+ */
+const Download = async (
+  req: Request,
+  res: Response
+): Promise<void | Response> => {
+  if (!IsStaff(req)) return res.status(403).send('Access Denied');
+  const petitions = await prisma.petition.findMany({
+    where: {
+      valid: true,
+    },
+  });
+  const tableCellText = (text: string) => {
+    return new TableCell({
+      children: [
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: text,
+              size: 16,
+            }),
+          ],
+          alignment: AlignmentType.CENTER,
+        }),
+      ],
+      verticalAlign: VerticalAlign.CENTER,
+      margins: {
+        left: 100,
+        right: 100,
+      },
+    });
+  };
+
+  const rows: TableRow[] = [];
+  for (const petition of petitions) {
+    const uri = `petitions/${petition.id}/`;
+    rows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: await getS3Object(`${uri}signature.webp`, true),
+                    transformation: {
+                      width: 122,
+                      height: 45,
+                    },
+                  }),
+                ],
+              }),
+            ],
+            verticalAlign: VerticalAlign.CENTER,
+          }),
+          tableCellText(petition.email),
+          tableCellText(petition.electoral_number),
+          tableCellText(petition.address),
+          tableCellText(petition.cin),
+          tableCellText(`${petition.firstname} ${petition.lastname}`),
+        ],
+      })
+    );
+  }
+  const doc = new Document({
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: {
+              top: 100,
+              right: 100,
+              bottom: 100,
+              left: 100,
+            },
+          },
+        },
+        children: [
+          new Table({
+            columnWidths: [1606, 1606, 1606, 2200, 1606, 1606],
+            width: {
+              size: 100,
+              type: WidthType.PERCENTAGE,
+            },
+            rows: [
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'التوقيع',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'البريد الالكتروني',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'رقم التسجيل في اللوائح الانتخابية',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'عنوان الاقامة',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'رقم البطاقة الوطنية',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: 'الاسم',
+                        alignment: AlignmentType.CENTER,
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                ],
+              }),
+              ...rows,
+            ],
+          }),
+        ],
+      },
+    ],
+  });
+  const blob = await Packer.toBuffer(doc);
+  return res.status(200).send(blob);
+};
+
+export { Create, GetAll, GetFiles, Validate, Download };

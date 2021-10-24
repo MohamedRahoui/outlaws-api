@@ -14,9 +14,10 @@ const PORT = process.env.PORT;
 
 // Third party middlewares
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 5 * 60 * 1000, // 3 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
+
 app.use(express.json());
 app.use(cors());
 app.use(morgan('common'));
