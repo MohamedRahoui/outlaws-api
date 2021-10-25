@@ -10,11 +10,15 @@ import RecaptchaMiddleware from './middlewares/recaptcha';
 import JWTMiddleware from './middlewares/jwt';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
-
+import { RewriteFrames } from '@sentry/integrations';
 const app = express();
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   integrations: [
+    new RewriteFrames({
+      // FIXME:: Remove this from here
+      root: '/app/dist',
+    }),
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
