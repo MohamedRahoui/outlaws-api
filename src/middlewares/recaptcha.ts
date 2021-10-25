@@ -23,11 +23,12 @@ const RecaptchaMiddleware = async (
       }
     );
     const { success, score } = results.data;
-    if (success && score < 0.5) return res.status(422).send('Recaptcha error');
+    if (success && score < 0.5)
+      return res.status(400).send('Recaptcha score error');
     return next();
   } catch (error) {
     console.error(error);
-    res.status(422).send('Recaptcha error');
+    res.status(400).send('Recaptcha error');
   }
 };
 

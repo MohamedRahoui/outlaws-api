@@ -17,18 +17,12 @@ const Upload = (
   upload(req, res, (err): void | Response => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE')
-        return res.status(422).send([
-          {
-            field: err.field || '',
-            message: 'La taille du fichier ne doit pas depasser 20MB',
-          },
-        ]);
-      return res.status(422).send([
-        {
-          field: err.field || '',
-          message: 'Veuillez choisir un autre fichier',
-        },
-      ]);
+        return res.status(422).send({
+          [err.field || '']: 'La taille du fichier ne doit pas depasser 20MB',
+        });
+      return res.status(422).send({
+        [err.field || '']: 'Veuillez choisir un autre fichier',
+      });
     }
     if (err) return res.status(400).send();
     next();

@@ -80,13 +80,13 @@ const GetAll = async (
 const GetCV = async (req: Request, res: Response): Promise<void | Response> => {
   if (!IsStaff(req)) return res.status(403).send('Access Denied');
   const uuid: string = req.params.uuid || '';
-  if (!uuid) return res.status(422).send('No petition selected');
+  if (!uuid) return res.status(400).send('No petition selected');
   const trainee = await prisma.trainee.findFirst({
     where: {
       id: uuid,
     },
   });
-  if (!trainee) return res.status(422).send('Invalid Trainee');
+  if (!trainee) return res.status(400).send('Invalid Trainee');
   const uri = `trainees/${uuid}/`;
   const cv = await getS3Object(`${uri}cv.pdf`, true).catch(() => {
     return res.status(400).send('Failed to get files');

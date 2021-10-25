@@ -8,13 +8,28 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import RecaptchaMiddleware from './middlewares/recaptcha';
 import JWTMiddleware from './middlewares/jwt';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
 const app = express();
-const PORT = process.env.PORT;
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Tracing.Integrations.Express({ app }),
+  ],
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 0.5,
+  environment: process.env.SENTRY_ENVIRONMENT,
+});
 
-// Third party middlewares
+// Rate Limit
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 3 minutes
+  windowMs: 5 * 60 * 1000, // 5 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
 
@@ -24,13 +39,39 @@ app.use(morgan('common'));
 app.use(helmet());
 app.use(limiter);
 
-// Global middlewares
+// Homemade middlewares
 app.use(RecaptchaMiddleware);
 app.use(JWTMiddleware);
+
+// RequestHandler creates a separate execution context using domains, so that every
+// transaction/span/breadcrumb is attached to its own Hub instance
+app.use(
+  Sentry.Handlers.requestHandler({
+    ip: true,
+  })
+);
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
 
 // API routes
 Routes(app);
 
+app.use(
+  Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      if (
+        error.status === 400 ||
+        error.status === 404 ||
+        (error.status && error.status >= 500)
+      ) {
+        return true;
+      }
+      return false;
+    },
+  })
+);
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Outlaws API listening at http://localhost:${PORT}`);
 });

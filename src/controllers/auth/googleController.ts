@@ -23,7 +23,7 @@ const AuthGoogle = async (
     const payload = result.getPayload();
 
     if (!payload || !payload.sub)
-      return res.status(422).send({
+      return res.status(400).send({
         code: 'NO_PROFILE_DATA',
       });
 

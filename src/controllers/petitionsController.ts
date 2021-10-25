@@ -123,13 +123,13 @@ const GetFiles = async (
 ): Promise<void | Response> => {
   if (!IsStaff(req)) return res.status(403).send('Access Denied');
   const uuid: string = req.params.uuid || '';
-  if (!uuid) return res.status(422).send('No petition selected');
+  if (!uuid) return res.status(400).send('No petition selected');
   const petiton = await prisma.petition.findFirst({
     where: {
       id: uuid,
     },
   });
-  if (!petiton) return res.status(422).send('Invalid Petition');
+  if (!petiton) return res.status(400).send('Invalid Petition');
   const uri = `petitions/${uuid}/`;
   const Querys = [
     getS3Object(`${uri}identity_card_1.webp`),
