@@ -17,7 +17,7 @@ Sentry.init({
   integrations: [
     new RewriteFrames({
       // FIXME:: Remove this from here
-      root: '/app/dist',
+      root: '/app',
     }),
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),

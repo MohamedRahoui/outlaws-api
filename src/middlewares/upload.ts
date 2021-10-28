@@ -1,5 +1,6 @@
 import multer from 'multer';
 import { Request, Response, NextFunction } from 'express';
+import { captureException } from '@sentry/minimal';
 
 const Upload = (
   req: Request,
@@ -24,7 +25,10 @@ const Upload = (
         [err.field || '']: 'Veuillez choisir un autre fichier',
       });
     }
-    if (err) return res.status(400).send();
+    if (err) {
+      captureException(err);
+      return res.status(400).send();
+    }
     next();
   });
 };

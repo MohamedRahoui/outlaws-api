@@ -6,6 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
+    "build:prod": "tsc -p tsconfig.production.json",
     "dev": "nodemon dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "fillData": "node ./dist/scripts/fillData.js",
