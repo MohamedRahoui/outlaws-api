@@ -1,6 +1,6 @@
 import 'module-alias/register';
 import 'dotenv/config';
-import express from 'express';
+import express, { ErrorRequestHandler, Request, Response } from 'express';
 import Routes from '@routes/routes';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -75,6 +75,17 @@ app.use(
     },
   })
 );
+
+const errorHandler: ErrorRequestHandler = (error, _, res) => {
+  res.status(400).send({
+    error: {
+      status: 400 || error.status, // 400 :p
+      message: 'Internal Server Error',
+    },
+  });
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
