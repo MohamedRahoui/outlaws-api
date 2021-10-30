@@ -1,4 +1,5 @@
 import { Trainee, PrismaClient } from '.prisma/client';
+import { captureException } from '@sentry/minimal';
 import traineeErrors from '@src/schemas/trainee';
 import { IsStaff } from '@src/tools/checks';
 import { getS3Object, UploadFile } from '@src/tools/storage';
@@ -47,7 +48,11 @@ const Create = async (
       signature: 'Votre CV est requis',
     });
   const uploadUrl = `trainees/${createdTrainee.id}/`;
-  await UploadFile(cv.buffer, uploadUrl + 'cv.pdf');
+  try {
+    await UploadFile(cv.buffer, uploadUrl + 'cv.pdf');
+  } catch (error) {
+    captureException(error);
+  }
 
   return res.status(200).send('Sent Successfully');
 };

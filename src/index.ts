@@ -27,7 +27,7 @@ Sentry.init({
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
-  tracesSampleRate: 0.5,
+  tracesSampleRate: 0,
   environment: process.env.SENTRY_ENVIRONMENT,
 });
 
@@ -64,6 +64,7 @@ app.use(
   Sentry.Handlers.errorHandler({
     shouldHandleError(error) {
       if (
+        error.status === 403 ||
         error.status === 400 ||
         error.status === 404 ||
         (error.status && error.status >= 500)
