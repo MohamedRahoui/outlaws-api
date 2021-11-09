@@ -17,6 +17,7 @@ import {
   TextRun,
   ImageRun,
 } from 'docx';
+import { captureException } from '@sentry/minimal';
 
 const prisma = new PrismaClient();
 
@@ -136,10 +137,12 @@ const GetFiles = async (
     getS3Object(`${uri}identity_card_2.webp`),
     getS3Object(`${uri}signature.webp`),
   ];
-  const files = await Promise.all(Querys).catch(() => {
+  try {
+    const files = await Promise.all(Querys);
+    return res.status(200).send(files || []);
+  } catch (_) {
     return res.status(400).send('Failed to get files');
-  });
-  return res.status(200).send(files || []);
+  }
 };
 
 /**
@@ -208,35 +211,42 @@ const Download = async (
   const rows: TableRow[] = [];
   for (const petition of petitions) {
     const uri = `petitions/${petition.id}/`;
-    const signature = await getS3Object(`${uri}signature.webp`, true);
-    const toPng = await sharp(signature).png().toBuffer();
-    rows.push(
-      new TableRow({
-        children: [
-          new TableCell({
-            children: [
-              new Paragraph({
-                children: [
-                  new ImageRun({
-                    data: toPng,
-                    transformation: {
-                      width: 122,
-                      height: 45,
-                    },
-                  }),
-                ],
-              }),
-            ],
-            verticalAlign: VerticalAlign.CENTER,
-          }),
-          tableCellText(petition.email),
-          tableCellText(petition.electoral_number),
-          tableCellText(petition.address),
-          tableCellText(petition.cin),
-          tableCellText(`${petition.firstname} ${petition.lastname}`),
-        ],
-      })
-    );
+    let toPng: Buffer | string = '';
+    try {
+      const signature = await getS3Object(`${uri}signature.webp`, true);
+      toPng = await sharp(signature).png().toBuffer();
+    } catch (error) {
+      captureException(error);
+    }
+    if (toPng) {
+      rows.push(
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new ImageRun({
+                      data: toPng,
+                      transformation: {
+                        width: 122,
+                        height: 45,
+                      },
+                    }),
+                  ],
+                }),
+              ],
+              verticalAlign: VerticalAlign.CENTER,
+            }),
+            tableCellText(petition.email),
+            tableCellText(petition.electoral_number),
+            tableCellText(petition.address),
+            tableCellText(petition.cin),
+            tableCellText(`${petition.firstname} ${petition.lastname}`),
+          ],
+        })
+      );
+    }
   }
   const doc = new Document({
     sections: [

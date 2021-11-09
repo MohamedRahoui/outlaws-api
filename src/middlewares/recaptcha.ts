@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import axios from 'axios';
 import { RouteIsNoRecapthca } from '@src/tools/checks';
-
+import { captureException } from '@sentry/minimal';
+import { CaptureContext } from '@sentry/types';
 const RecaptchaMiddleware = async (
   req: Request,
   res: Response,
@@ -10,7 +11,14 @@ const RecaptchaMiddleware = async (
   const isNoRecaptcha = RouteIsNoRecapthca(req);
   if (isNoRecaptcha) return next();
   const token = req.header('X-RECAPTCHA');
-  if (!token) return res.status(403).send('Recaptcha is required');
+  if (!token) {
+    captureException('Called API without a RECAPTCHA', {
+      extra: {
+        req,
+      },
+    });
+    return res.status(403).send('Recaptcha is required');
+  }
   const secret = process.env.RECAPTCHA_SECRETE_KEY;
   try {
     const results = await axios.post(
@@ -23,11 +31,18 @@ const RecaptchaMiddleware = async (
       }
     );
     const { success, score } = results.data;
-    if (success && score < 0.5)
+    if (success && score < 0.5) {
+      captureException('Recaptcha score < 0,5', {
+        extra: {
+          req,
+          score,
+        },
+      });
       return res.status(400).send('Recaptcha score error');
+    }
     return next();
   } catch (error) {
-    console.error(error);
+    captureException('Recaptcha error', error as CaptureContext);
     res.status(400).send('Recaptcha error');
   }
 };

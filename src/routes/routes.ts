@@ -2,6 +2,7 @@ import { Express } from 'express';
 import IndexRouter from './indexRoute';
 import DataRouter from './dataRoute';
 import PetitionsRouter from './petitionsRoute';
+import MembersRouter from './membersRoute';
 import VolunteersRouter from './volunteersRoute';
 import VotesRouter from './votesRoute';
 import TestimoniesRouter from './testimoniesRoute';
@@ -14,6 +15,7 @@ const Routes = (app: Express): void => {
   app.use('/', IndexRouter);
   app.use('/data', DataRouter);
   app.use('/petitions', PetitionsRouter);
+  app.use('/members', MembersRouter);
   app.use('/volunteers', VolunteersRouter);
   app.use('/votes', VotesRouter);
   app.use('/messages', MessagesRouter);
