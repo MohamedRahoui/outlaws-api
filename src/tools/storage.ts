@@ -12,7 +12,7 @@ export const UploadFile = async (
 ): Promise<void> => {
   await s3
     .upload({
-      Bucket: 'moroccanoutlaws',
+      Bucket: 'outlaws',
       ACL: 'private', // Specify whether anyone with link can access the file
       Key: url,
       Body: buffer,
@@ -31,7 +31,7 @@ export const getS3Object = (
   return new Promise((resolve, reject) => {
     s3.getObject(
       {
-        Bucket: 'moroccanoutlaws',
+        Bucket: 'outlaws',
         Key: key,
       },
       (err, data) => {
@@ -58,7 +58,7 @@ export const getS3Object = (
 
 export const emptyS3Directory = async (dir: string): Promise<void> => {
   const listParams = {
-    Bucket: 'moroccanoutlaws',
+    Bucket: 'outlaws',
     Prefix: dir,
   };
   try {
@@ -67,7 +67,7 @@ export const emptyS3Directory = async (dir: string): Promise<void> => {
     if (listedObjects.Contents?.length === 0) return;
 
     const deleteParams = {
-      Bucket: 'moroccanoutlaws',
+      Bucket: 'outlaws',
       Delete: { Objects: [] },
     };
 

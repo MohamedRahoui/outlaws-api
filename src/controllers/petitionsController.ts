@@ -83,7 +83,7 @@ const Create = async (
     }
     await UploadFile(
       signature.buffer,
-      uploadUrl + signature.fieldname + '.webp'
+      uploadUrl + 'signature.webp'
     );
 
     return res.status(200).send('Successfull signature');
