@@ -41,7 +41,7 @@ const PUBLIC_ROUTES: IRoute[] = [
   },
 ];
 
-// 
+//
 const NO_RECAPTCHA: IRoute[] = [
   {
     path: '/auth/refresh-token',
@@ -53,6 +53,10 @@ const NO_RECAPTCHA: IRoute[] = [
   },
   {
     path: '/data/points',
+    method: 'GET',
+  },
+  {
+    path: '/data/subscription',
     method: 'GET',
   },
 ];

@@ -7,6 +7,7 @@ import VolunteersRouter from './volunteersRoute';
 import VotesRouter from './votesRoute';
 import TestimoniesRouter from './testimoniesRoute';
 import MessagesRouter from './messagesRoute';
+import OrdersRouter from './ordersRoute';
 import TraineesRouter from './traineesRoute';
 import GoogleRouter from '@routes/auth/googleRoute';
 import TokenRouter from '@routes/auth/tokenRoute';
@@ -19,6 +20,7 @@ const Routes = (app: Express): void => {
   app.use('/volunteers', VolunteersRouter);
   app.use('/votes', VotesRouter);
   app.use('/messages', MessagesRouter);
+  app.use('/orders', OrdersRouter);
   app.use('/testimonies', TestimoniesRouter);
   app.use('/trainees', TraineesRouter);
   app.use('/auth/google', GoogleRouter);

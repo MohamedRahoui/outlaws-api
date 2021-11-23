@@ -37,7 +37,7 @@ const Create = async (
     data: body,
   });
   if (!createdVolunteer) return res.status(400).send('Unable to register');
-  return res.status(200).send('Successfull Volunteer');
+  return res.status(200).send('Successful Volunteer');
 };
 
 /**

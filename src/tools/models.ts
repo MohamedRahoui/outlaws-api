@@ -1,3 +1,5 @@
+import { Order } from '.prisma/client';
+
 interface IRoute {
   path: string;
   method: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH';
@@ -21,6 +23,8 @@ interface IUserPoints {
   validatedPetitions: number;
   petitionsInProgress: number;
   currentPoints?: number;
+  orders?: Order[];
+  isMember?: boolean;
 }
 // FORMS
 

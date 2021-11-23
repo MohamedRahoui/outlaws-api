@@ -149,4 +149,62 @@ const Validate = async (
   return res.status(200).send('Validation changed');
 };
 
-export { Create, GetAll, GetFiles, Validate };
+/**
+ * Activate Member's subscription
+ * @param req
+ * @param res
+ * @returns
+ */
+const ActivateSubscription = async (
+  req: Request,
+  res: Response
+): Promise<void | Response> => {
+  if (!IsStaff(req)) return res.status(403).send('Access Denied');
+  const memberId = req.body.id || null;
+  if (!memberId) return res.status(400).send('Missing member ID');
+  const currentDate = new Date();
+  const updated = await prisma.member.update({
+    where: {
+      id: memberId,
+    },
+    data: {
+      subscription: currentDate,
+    },
+  });
+  if (!updated) return res.status(400).send('Failed query');
+  return res.status(200).send(currentDate);
+};
+
+/**
+ * Cancel Member's subscription
+ * @param req
+ * @param res
+ * @returns
+ */
+const CancelSubscription = async (
+  req: Request,
+  res: Response
+): Promise<void | Response> => {
+  if (!IsStaff(req)) return res.status(403).send('Access Denied');
+  const memberId = req.body.id || null;
+  if (!memberId) return res.status(400).send('Missing member ID');
+  const updated = await prisma.member.update({
+    where: {
+      id: memberId,
+    },
+    data: {
+      subscription: null,
+    },
+  });
+  if (!updated) return res.status(400).send('Failed query');
+  return res.status(200).send('Subscription removed');
+};
+
+export {
+  Create,
+  GetAll,
+  GetFiles,
+  Validate,
+  ActivateSubscription,
+  CancelSubscription,
+};

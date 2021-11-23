@@ -1,29 +1,24 @@
 import * as Yup from 'yup';
 const formValidation = Yup.object({
+  phone: Yup.string()
+    .required('Votre N° de Téléphone est requis')
+    .max(20, 'Votre N° de Téléphone ne peut pas dépasser 20 caractères')
+    .min(6, 'Votre N° de Téléphone doit contenir au moins 6 caractères'),
   name: Yup.string()
     .max(40, 'Votre Nom ne peut pas dépasser 40 caractères')
     .min(3, 'Votre Nom doit contenir au moins 3 caractères')
     .required('Votre Nom est requis'),
+  address: Yup.string()
+    .max(150, 'Votre Adresse ne peut pas dépasser 150 caractères')
+    .min(5, 'Votre Adresse doit contenir au moins 5 caractères')
+    .required('Votre Adresse est requise'),
   email: Yup.string()
     .email('Veuillez insérer un E-mail valide')
     .required('Votre E-mail est requis'),
-  phone: Yup.string()
-    .required('Votre N° de Téléphone est requis')
-    .max(20, 'Votre N° de Téléphone ne peut pas dépasser 20 caractères')
-    .min(6, 'Votre Nom doit contenir au moins 6 caractères'),
-  message: Yup.string()
-    .max(1000, 'Votre message ne peut pas dépasser 500 caractères')
-    .min(5, 'Votre message doit contenir au moins 5 caractères')
-    .required('Votre réponse est requise'),
-  reason: Yup.string()
-    .required('Votre choix est requis')
-    .oneOf(
-      ['Help', 'Presse', 'R.Académique', 'Autres', 'Bug'],
-      'Votre choix est requis'
-    ),
+  rewardId: Yup.string().required('The reward is required'),
 });
 
-const messageErrors = (
+const orderErrors = (
   data: unknown
 ): Promise<{ data: unknown; errors: unknown }> => {
   return new Promise<{ data: unknown; errors: unknown }>((resolve) => {
@@ -56,4 +51,4 @@ const messageErrors = (
       });
   });
 };
-export default messageErrors;
+export default orderErrors;
