@@ -1,7 +1,6 @@
-import { PrismaClient } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
 import { filesSizeCheck, filesTypeCheck } from '@src/tools/storage';
 import * as Yup from 'yup';
-const prisma = new PrismaClient();
 const formValidation = Yup.object({
   name: Yup.string()
     .max(40, 'Votre Nom ne peut pas dépasser 40 caractères')

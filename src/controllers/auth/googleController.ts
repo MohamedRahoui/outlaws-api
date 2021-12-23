@@ -1,7 +1,8 @@
-import { Prisma, PrismaClient, User } from '.prisma/client';
+import { Prisma, User } from '.prisma/client';
 import { Response, Request } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import JWT from 'jsonwebtoken';
+import prisma from '@src/tools/dbClient';
 
 const AuthGoogle = async (
   req: Request,
@@ -26,8 +27,6 @@ const AuthGoogle = async (
       return res.status(400).send({
         code: 'NO_PROFILE_DATA',
       });
-
-    const prisma = new PrismaClient();
 
     let currentUser: User | null = null;
 

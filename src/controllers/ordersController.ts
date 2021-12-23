@@ -1,9 +1,8 @@
-import { Order, PrismaClient } from '.prisma/client';
+import { Order } from '.prisma/client';
 import orderErrors from '@src/schemas/order';
 import { IsStaff } from '@src/tools/checks';
 import { Response, Request } from 'express';
-
-const prisma = new PrismaClient();
+import prisma from '@src/tools/dbClient';
 
 /**
  * Create an Order

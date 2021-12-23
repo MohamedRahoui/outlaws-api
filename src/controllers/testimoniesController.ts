@@ -1,9 +1,8 @@
-import { Prisma, PrismaClient, Testimony } from '.prisma/client';
+import { Prisma, Testimony } from '.prisma/client';
 import testimonyErrors from '@src/schemas/testimony';
 import { IsStaff } from '@src/tools/checks';
 import { Response, Request } from 'express';
-
-const prisma = new PrismaClient();
+import prisma from '@src/tools/dbClient';
 
 /**
  * Create a Testimony

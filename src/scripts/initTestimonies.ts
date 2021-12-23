@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma } from '.prisma/client';
+import { Prisma } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
 
 let testimonies: Prisma.TestimonyCreateManyInput[] = [
   {
@@ -151,7 +152,6 @@ testimonies = testimonies.map((testimonie) => {
   testimonie.valid = true;
   return testimonie;
 });
-const prisma = new PrismaClient();
 
 const main = async () => {
   await prisma.testimony.createMany({

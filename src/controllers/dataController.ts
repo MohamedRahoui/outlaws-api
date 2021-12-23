@@ -1,8 +1,7 @@
-import { PrismaClient } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
 import { IUserPoints } from '@src/tools/models';
 import { getS3Object } from '@src/tools/storage';
 import { Response, Request } from 'express';
-const prisma = new PrismaClient();
 
 const GetUserSubscription = async (
   req: Request,

@@ -1,10 +1,9 @@
-import { PrismaClient, Volunteer } from '.prisma/client';
+import { Volunteer } from '.prisma/client';
 import volunteerErrors from '@src/schemas/volunteer';
 import { IsStaff } from '@src/tools/checks';
 import { Response, Request } from 'express';
 
-const prisma = new PrismaClient();
-
+import prisma from '@src/tools/dbClient';
 /**
  * Create a Volunteer
  * @param req

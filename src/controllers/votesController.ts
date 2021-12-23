@@ -1,9 +1,8 @@
-import { PrismaClient, Vote } from '.prisma/client';
+import { Vote } from '.prisma/client';
 import voteErrors from '@src/schemas/vote';
 import { IsStaff } from '@src/tools/checks';
 import { Response, Request } from 'express';
-
-const prisma = new PrismaClient();
+import prisma from '@src/tools/dbClient';
 
 /**
  * Create a Vote

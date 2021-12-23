@@ -1,9 +1,9 @@
 import prompt from 'prompt';
-import { PrismaClient, Prisma } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
+import { Prisma } from '.prisma/client';
 interface IModel {
   name: string;
 }
-const prisma = new PrismaClient();
 interface IReward extends IModel {
   data: Prisma.RewardCreateInput[];
   dataClass: Prisma.RewardDelegate<

@@ -1,8 +1,7 @@
-import { PrismaClient } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
 import { IPetitionSchema } from '@src/tools/models';
 import { filesSizeCheck, filesTypeCheck } from '@src/tools/storage';
 import * as Yup from 'yup';
-const prisma = new PrismaClient();
 const formValidation = Yup.object({
   firstname: Yup.string()
     .required('Votre Pénom est requis')

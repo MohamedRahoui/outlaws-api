@@ -1,4 +1,4 @@
-import { PrismaClient } from '.prisma/client';
+import prisma from '@src/tools/dbClient';
 import { Response, Request } from 'express';
 import { TokenExpiredError, verify, sign } from 'jsonwebtoken';
 const Refresh = async (
@@ -7,7 +7,6 @@ const Refresh = async (
 ): Promise<void | Response> => {
   const { refreshToken } = req.body || '';
   if (!refreshToken) return res.status(403).send('Refresh token required');
-  const prisma = new PrismaClient();
   const user = await prisma.user.findFirst({
     where: {
       token: refreshToken,

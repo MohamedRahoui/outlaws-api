@@ -1,11 +1,10 @@
-import { Trainee, PrismaClient } from '.prisma/client';
+import { Trainee } from '.prisma/client';
 import { captureException } from '@sentry/minimal';
 import traineeErrors from '@src/schemas/trainee';
 import { IsStaff } from '@src/tools/checks';
 import { getS3Object, UploadFile } from '@src/tools/storage';
 import { Response, Request } from 'express';
-
-const prisma = new PrismaClient();
+import prisma from '@src/tools/dbClient';
 
 /**
  * Create a Trainee

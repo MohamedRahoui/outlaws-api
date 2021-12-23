@@ -1,11 +1,10 @@
-import { Member, PrismaClient } from '.prisma/client';
+import { Member } from '.prisma/client';
 import memberErrors from '@src/schemas/member';
 import { IsStaff } from '@src/tools/checks';
 import { getS3Object, UploadFile } from '@src/tools/storage';
 import { Response, Request } from 'express';
 import sharp from 'sharp';
-
-const prisma = new PrismaClient();
+import prisma from '@src/tools/dbClient';
 
 /**
  * Create a Member

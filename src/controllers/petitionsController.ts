@@ -1,4 +1,4 @@
-import { Petition, PrismaClient } from '.prisma/client';
+import { Petition } from '.prisma/client';
 import petitionErrors from '@src/schemas/petition';
 import { IsStaff } from '@src/tools/checks';
 import { getS3Object, UploadFile } from '@src/tools/storage';
@@ -18,9 +18,7 @@ import {
   ImageRun,
 } from 'docx';
 import { captureException } from '@sentry/minimal';
-
-const prisma = new PrismaClient();
-
+import prisma from '@src/tools/dbClient';
 /**
  * Create a Petition
  * @param req
@@ -81,10 +79,7 @@ const Create = async (
     for (const file of identity_card) {
       await UploadFile(file.buffer, uploadUrl + file.fieldname + '.webp');
     }
-    await UploadFile(
-      signature.buffer,
-      uploadUrl + 'signature.webp'
-    );
+    await UploadFile(signature.buffer, uploadUrl + 'signature.webp');
 
     return res.status(200).send('Successfull signature');
   } catch (error) {
