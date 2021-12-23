@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import axios from 'axios';
 import { RouteIsNoRecapthca } from '@src/tools/checks';
 import { captureException } from '@sentry/minimal';
-import { CaptureContext } from '@sentry/types';
 const RecaptchaMiddleware = async (
   req: Request,
   res: Response,
@@ -12,11 +11,6 @@ const RecaptchaMiddleware = async (
   if (isNoRecaptcha) return next();
   const token = req.header('X-RECAPTCHA');
   if (!token) {
-    captureException('Called API without a RECAPTCHA', {
-      extra: {
-        req,
-      },
-    });
     return res.status(403).send('Recaptcha is required');
   }
   const secret = process.env.RECAPTCHA_SECRETE_KEY;
@@ -42,7 +36,6 @@ const RecaptchaMiddleware = async (
     }
     return next();
   } catch (error) {
-    captureException('Recaptcha error', error as CaptureContext);
     res.status(400).send('Recaptcha error');
   }
 };
