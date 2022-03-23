@@ -8,4 +8,4 @@ docker push moroccanoutlaws/api:latest
 # Pull
 # Tag
 # Deploy
-ssh root@api.moroccanoutlaws.com "docker pull moroccanoutlaws/api:latest; dokku git:from-image api moroccanoutlaws/api:latest"
+ssh root@moroccanoutlaws.com "docker pull moroccanoutlaws/api:latest; dokku git:from-image api moroccanoutlaws/api:latest"

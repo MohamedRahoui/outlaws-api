@@ -13,6 +13,7 @@ const RecaptchaMiddleware = async (
   if (!token) {
     return res.status(403).send('Recaptcha is required');
   }
+  if (token === process.env.RECAPTCHA_BYPASS) return next();
   const secret = process.env.RECAPTCHA_SECRETE_KEY;
   try {
     const results = await axios.post(

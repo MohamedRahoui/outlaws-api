@@ -3,11 +3,11 @@ WORKDIR /app
 COPY package.json yarn.lock ecosystem.config.js ./
 COPY tsconfig*.json custom.d.ts ./
 COPY prisma ./prisma/
-COPY .env.dev ./.env
+# COPY .env.dev ./.env
 RUN yarn install --frozen-lockfile
 COPY src ./src
 RUN yarn prisma generate
-RUN yarn prisma migrate dev
+# RUN yarn prisma migrate dev
 RUN yarn build
 
 FROM node:14-alpine
